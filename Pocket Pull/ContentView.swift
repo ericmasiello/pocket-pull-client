@@ -1,21 +1,18 @@
-//
-//  ContentView.swift
-//  Pocket Pull
-//
-//  Created by Eric Masiello on 5/16/26.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @State private var selectedTab: AppTab = .scan
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView(selection: $selectedTab) {
+            Tab("Scan", systemImage: "barcode.viewfinder", value: .scan) {
+                ScanView()
+            }
+
+            Tab("Collection", systemImage: "square.grid.2x2", value: .collection) {
+                CollectionView()
+            }
         }
-        .padding()
     }
 }
 
