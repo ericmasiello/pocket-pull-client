@@ -1,48 +1,37 @@
 ---
 name: do-work
-description: "Execute a unit of work end-to-end: plan, implement, validate with typecheck and tests, then commit. Use when user wants to do work, build a feature, fix a bug, or implement a phase from a plan."
+description: "Execute a unit of work end-to-end: branch, plan, implement, validate, commit, push, and open a pull request. Use when user wants autonomous work — build a feature, fix a bug, or implement a plan phase with full git automation."
 ---
 
-# Do Work
+# Do Work (Full Auto)
 
-Execute a complete unit of work: plan it, build it, validate it, commit it.
+Execute a complete unit of work: branch, plan, build, validate, commit, push, open PR.
+
+For the human-in-the-loop variant (no commit/push/PR), see `do-work-with-hitl-review`.
 
 ## Workflow
 
-### 1. Understand the task
+### Steps 1–5: Core workflow
 
-Read any referenced plan or PRD. Explore the codebase to understand the relevant files, patterns, and conventions. If the task is ambiguous, ask the user to clarify scope before proceeding.
+Follow all steps in [WORKFLOW.md](WORKFLOW.md).
 
-### 2. Plan the implementation (optional)
+### 6. Commit
 
-If the task has not already been planned, create a plan for it.
+Once build and tests pass, commit the work with a clear, conventional commit message.
 
-### 3. Implement
+### 7. Push & open PR
 
-**For backend code**: use red/green/refactor, one test at a time in a tracer-bullet style.
+1. Push the branch:
+   ```bash
+   git push -u origin HEAD
+   ```
 
-1. Write a single failing test for the smallest vertical slice of behavior
-2. Run the test — confirm it fails (red)
-3. Write the minimum code to make it pass (green)
-4. Repeat from step 1 for the next slice of behavior
-5. Refactor if needed while keeping tests green
+2. Open a pull request targeting `main`:
+   - Write a descriptive title summarizing the change
+   - Write a body that explains what changed, why, and how to verify
+   - If linked to a GitHub issue, include `Closes #<issue-number>` in the body
+   ```bash
+   gh pr create --title "<title>" --body "<body>"
+   ```
 
-Each test should target one thin vertical slice through the system. Do not write all tests upfront — write one, make it pass, then move to the next.
-
-**For UI code**: implement directly without TDD.
-
-### 4. Validate
-
-Run the feedback loops and fix any issues. Repeat until both pass cleanly.
-
-Run tests
-
-```bash
-xcodebuild -project "Pocket Pull.xcodeproj" -scheme "Pocket Pull" -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -quiet build 2>&1
-
-xcodebuild test -project "Pocket Pull.xcodeproj" -scheme "Pocket Pull" -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -only-testing:"Pocket PullTests" 2>&1
-```
-
-### 5. Commit
-
-Once typecheck and tests pass, commit the work.
+3. Report the PR URL to the user.
